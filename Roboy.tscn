@@ -1,6 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://bs00v6p0pjla2"]
+[gd_scene load_steps=17 format=3 uid="uid://bs00v6p0pjla2"]
 
 [ext_resource type="ArrayMesh" uid="uid://ccmurmskuorjv" path="res://objects/Roboy/Roboy.obj" id="1_jep5r"]
+[ext_resource type="Script" path="res://objects/Roboy/RoboyTilt.gd" id="1_ljynj"]
 [ext_resource type="Texture2D" uid="uid://8cise5r0ll68" path="res://objects/Roboy/texture_1.png" id="2_euky3"]
 [ext_resource type="Script" path="res://Robomesh.gd" id="3_yww0h"]
 [ext_resource type="Script" path="res://FaceSprite.gd" id="4_cchsr"]
@@ -54,6 +55,7 @@ cull_mode = 2
 albedo_color = Color(0.810698, 0.826485, 0.983038, 0.227451)
 
 [node name="Roboy" type="Node3D"]
+script = ExtResource("1_ljynj")
 
 [node name="RoMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.316501, 0, 0, 0, 0.316501, 0, 0, 0, 0.316501, 0.00306958, 0.100463, -0.0500943)
@@ -107,3 +109,9 @@ surface_material_override/0 = SubResource("StandardMaterial3D_b77gl")
 [node name="OmniLight3D" type="OmniLight3D" parent="Antenna"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00731722, 0.88521, -0.0510748)
 omni_range = 0.375
+
+[node name="FaceSprite2" type="AnimatedSprite3D" parent="."]
+transform = Transform3D(1.9646, 0, 0, 0, 1.9646, 0, 0, 0, 0.208242, 0.003, 0.415, -0.367733)
+sprite_frames = SubResource("SpriteFrames_ay4pg")
+animation = &"face"
+script = ExtResource("4_cchsr")

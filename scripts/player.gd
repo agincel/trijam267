@@ -89,13 +89,9 @@ func handle_effects():
 	
 	if is_on_floor():
 		if abs(velocity.x) > 1 or abs(velocity.z) > 1:
-			animation.play("walk", 0.5)
 			particles_trail.emitting = true
 			sound_footsteps.stream_paused = false
-		else:
-			animation.play("idle", 0.5)
-	else:
-		animation.play("jump", 0.5)
+
 
 func get_input_3d():
 	var input := Vector3.ZERO

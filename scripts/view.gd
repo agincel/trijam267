@@ -2,6 +2,7 @@ extends Node3D
 
 @export_group("Properties")
 @export var target: Node
+@export var vertical_offset = 1
 
 @export_group("Zoom")
 @export var zoom_minimum = 16
@@ -31,7 +32,7 @@ func _ready():
 func _physics_process(delta):
 	# Set position and rotation to targets
 	
-	self.position = self.position.lerp(target.position, delta * 4)
+	self.position = self.position.lerp(target.position + (vertical_offset * Vector3.UP), delta * 4)
 	
 	if did_use_mouse:
 		rotation_degrees = camera_rotation

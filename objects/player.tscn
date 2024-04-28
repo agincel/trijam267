@@ -60,4 +60,5 @@ volume_db = -5.0
 pitch_scale = 1.25
 autoplay = true
 
-[node name="Roboy" parent="." instance=ExtResource("5_7owau")]
+[node name="Roboy" parent="." node_paths=PackedStringArray("Character") instance=ExtResource("5_7owau")]
+Character = NodePath("..")

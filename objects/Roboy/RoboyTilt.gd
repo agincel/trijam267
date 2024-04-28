@@ -25,6 +25,6 @@ func _process(delta):
 	vel.y = 0
 	vel = vel.limit_length(VEL_MAX)
 	
-	RobotHead.global_position = self.position + HeadStartingOffset + (vel * HeadOffsetRatio)
-	
+	RobotHead.global_position = self.global_position + HeadStartingOffset + (vel * HeadOffsetRatio)
+	RobotDrillRoot.global_rotation = Vector3(vel.z * DrillTiltRatio, 0, vel.x * DrillTiltRatio * -1)
 	pass

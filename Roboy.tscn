@@ -11,10 +11,6 @@
 vertex_color_use_as_albedo = true
 albedo_texture = ExtResource("2_euky3")
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_hc3me"]
-
-[sub_resource type="SphereMesh" id="SphereMesh_28f6b"]
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_ggb0m"]
 atlas = ExtResource("2_euky3")
 region = Rect2(0, 0, 32, 32)
@@ -44,6 +40,10 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_hc3me"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_28f6b"]
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_xai17"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_tkmnb"]
@@ -54,8 +54,10 @@ blend_mode = 1
 cull_mode = 2
 albedo_color = Color(0.810698, 0.826485, 0.983038, 0.227451)
 
-[node name="Roboy" type="Node3D"]
+[node name="Roboy" type="Node3D" node_paths=PackedStringArray("RobotHead", "RobotDrillRoot")]
 script = ExtResource("1_ljynj")
+RobotHead = NodePath("RoMesh")
+RobotDrillRoot = NodePath("Node3D")
 
 [node name="RoMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.316501, 0, 0, 0, 0.316501, 0, 0, 0, 0.316501, 0.00306958, 0.523782, -0.0500943)
@@ -63,6 +65,18 @@ mesh = ExtResource("1_jep5r")
 surface_material_override/0 = SubResource("StandardMaterial3D_mb4ha")
 script = ExtResource("3_yww0h")
 uvAnimationFile = "res://objects/Roboy/uvAnimation.txt"
+
+[node name="FaceSprite" type="AnimatedSprite3D" parent="RoMesh"]
+transform = Transform3D(6.20725, 0, 0, 0, 6.20725, 0, 0, 0, 0.657951, 0, 0.994351, 1.01945)
+sprite_frames = SubResource("SpriteFrames_ay4pg")
+animation = &"face"
+script = ExtResource("4_cchsr")
+
+[node name="FaceSprite2" type="AnimatedSprite3D" parent="RoMesh"]
+transform = Transform3D(6.20725, 0, 0, 0, 6.20725, 0, 0, 0, 0.657951, -0.000219841, 0.993795, -1.0036)
+sprite_frames = SubResource("SpriteFrames_ay4pg")
+animation = &"face"
+script = ExtResource("4_cchsr")
 
 [node name="Node3D" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00306958, 0.0145177, 0.000886321)
@@ -88,12 +102,6 @@ transform = Transform3D(0.36493, 0.00208059, 0.151273, -0.0610709, 0.0163709, 0.
 mesh = SubResource("SphereMesh_28f6b")
 surface_material_override/0 = ExtResource("4_kfrcy")
 
-[node name="FaceSprite" type="AnimatedSprite3D" parent="."]
-transform = Transform3D(1.9646, 0, 0, 0, 1.9646, 0, 0, 0, 0.208242, 0.00306958, 0.838495, 0.272562)
-sprite_frames = SubResource("SpriteFrames_ay4pg")
-animation = &"face"
-script = ExtResource("4_cchsr")
-
 [node name="Antenna" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.423319, 0)
 
@@ -110,9 +118,3 @@ surface_material_override/0 = SubResource("StandardMaterial3D_b77gl")
 [node name="OmniLight3D" type="OmniLight3D" parent="Antenna"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00731722, 0.88521, -0.0510748)
 omni_range = 0.375
-
-[node name="FaceSprite2" type="AnimatedSprite3D" parent="."]
-transform = Transform3D(1.9646, 0, 0, 0, 1.9646, 0, 0, 0, 0.208242, 0.003, 0.838319, -0.367733)
-sprite_frames = SubResource("SpriteFrames_ay4pg")
-animation = &"face"
-script = ExtResource("4_cchsr")

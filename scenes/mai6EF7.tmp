@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bqqgyqafm7xwp"]
+[gd_scene load_steps=18 format=3 uid="uid://bqqgyqafm7xwp"]
 
 [ext_resource type="Environment" uid="uid://bqnqgflivjvue" path="res://scenes/main-environment.tres" id="1_ahusb"]
 [ext_resource type="PackedScene" uid="uid://dl2ed4gkybggf" path="res://objects/player.tscn" id="2_onms2"]
@@ -12,7 +12,7 @@
 [ext_resource type="Script" path="res://scripts/hud.gd" id="11_apvpm"]
 [ext_resource type="PackedScene" uid="uid://dy017k58p20sk" path="res://objects/cloud.tscn" id="13_drtpy"]
 [ext_resource type="Texture2D" uid="uid://cd7oyc56ehkx1" path="res://sprites/coin.png" id="13_jfda3"]
-[ext_resource type="PackedScene" uid="uid://c6fyppafhdqbr" path="res://objects/launchpad.tscn" id="14_nwm4y"]
+[ext_resource type="Script" path="res://objects/Launchpad.gd" id="14_0g5ai"]
 [ext_resource type="FontFile" uid="uid://d0cxd77jybrcn" path="res://fonts/lilita_one_regular.ttf" id="17_tk810"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_38ys3"]
@@ -20,6 +20,11 @@ font = ExtResource("17_tk810")
 font_size = 48
 shadow_color = Color(0, 0, 0, 0.376471)
 shadow_offset = Vector2(2, 2)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_j1xgc"]
+height = 0.2
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_5lswr"]
 
 [node name="Main" type="Node3D"]
 
@@ -163,6 +168,18 @@ offset_bottom = 123.0
 text = "0"
 label_settings = SubResource("LabelSettings_38ys3")
 
-[node name="Launchpad" parent="." instance=ExtResource("14_nwm4y")]
+[node name="Launchpad" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.84479, 1.44947, -2.43206)
+script = ExtResource("14_0g5ai")
+JumpStrength = 15
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Launchpad"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0243747, 0)
+shape = SubResource("CylinderShape3D_j1xgc")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Launchpad"]
+transform = Transform3D(1, 0, 0, 0, 0.1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_5lswr")
 
 [connection signal="coin_collected" from="Player" to="HUD" method="_on_coin_collected"]
+[connection signal="body_entered" from="Launchpad" to="Launchpad" method="_on_body_entered"]

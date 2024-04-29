@@ -1,0 +1,100 @@
+[gd_scene load_steps=11 format=3 uid="uid://clb5x3j25yi78"]
+
+[ext_resource type="PackedScene" uid="uid://dl2ed4gkybggf" path="res://objects/player.tscn" id="1_sx12s"]
+[ext_resource type="Material" uid="uid://bpw3wwjdyxm5w" path="res://Metal.tres" id="2_1s5w4"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="2_6f5ip"]
+[ext_resource type="Script" path="res://objects/Drill Root.gd" id="2_crugy"]
+[ext_resource type="Texture2D" uid="uid://cd7oyc56ehkx1" path="res://sprites/coin.png" id="3_f326n"]
+[ext_resource type="FontFile" uid="uid://d0cxd77jybrcn" path="res://fonts/lilita_one_regular.ttf" id="4_vjgqr"]
+[ext_resource type="Script" path="res://scripts/view.gd" id="5_83jpv"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_bumsu"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_dmxrw"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_38ys3"]
+font = ExtResource("4_vjgqr")
+font_size = 48
+shadow_color = Color(0, 0, 0, 0.376471)
+shadow_offset = Vector2(2, 2)
+
+[node name="Player Container" type="Node3D"]
+
+[node name="Player" parent="." node_paths=PackedStringArray("view") instance=ExtResource("1_sx12s")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+view = NodePath("../View")
+
+[node name="Roboy" parent="Player" index="4" node_paths=PackedStringArray("RobotDrillRoot", "RobotDrillRotationRoot")]
+RobotDrillRoot = NodePath("../../Drill Root")
+RobotDrillRotationRoot = NodePath("../../Drill Root/Rotation Root")
+
+[node name="Drill Root" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00306958, 0.0145177, 0.000886321)
+script = ExtResource("2_crugy")
+
+[node name="Rotation Root" type="Node3D" parent="Drill Root"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Drill Root/Rotation Root"]
+transform = Transform3D(0.290533, 0, 0, 0, 0.487625, 0, 0, 0, 0.290533, 0, 0.466726, 0)
+mesh = SubResource("CapsuleMesh_bumsu")
+skeleton = NodePath("../../..")
+surface_material_override/0 = ExtResource("2_1s5w4")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Drill Root/Rotation Root"]
+transform = Transform3D(0.627431, 0.0035772, 0.260087, -0.105, 0.0281468, 0.0301069, -0.252978, -0.00281044, 0.632566, 0, 0.374997, 0)
+mesh = SubResource("SphereMesh_dmxrw")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s5w4")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Drill Root/Rotation Root"]
+transform = Transform3D(0.431428, 0.00245972, 0.178839, -0.0721994, 0.019354, 0.0207018, -0.17395, -0.00193249, 0.43496, 0, 0.227953, 0)
+mesh = SubResource("SphereMesh_dmxrw")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s5w4")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Drill Root/Rotation Root"]
+transform = Transform3D(0.36493, 0.00208059, 0.151273, -0.0610709, 0.0163709, 0.017511, -0.147139, -0.00163463, 0.367917, 0, 0.0988142, 0)
+mesh = SubResource("SphereMesh_dmxrw")
+skeleton = NodePath("../..")
+surface_material_override/0 = ExtResource("2_1s5w4")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("2_6f5ip")
+
+[node name="Icon" type="TextureRect" parent="HUD"]
+offset_left = 57.0
+offset_top = 67.0
+offset_right = 313.0
+offset_bottom = 323.0
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_f326n")
+
+[node name="x" type="Label" parent="HUD"]
+offset_left = 112.0
+offset_top = 64.0
+offset_right = 144.0
+offset_bottom = 123.0
+text = "×"
+label_settings = SubResource("LabelSettings_38ys3")
+
+[node name="Coins" type="Label" parent="HUD"]
+offset_left = 144.0
+offset_top = 64.0
+offset_right = 368.0
+offset_bottom = 123.0
+text = "0"
+label_settings = SubResource("LabelSettings_38ys3")
+
+[node name="View" type="Node3D" parent="." node_paths=PackedStringArray("target")]
+transform = Transform3D(0.707107, -0.298836, 0.640856, 0, 0.906308, 0.422618, -0.707107, -0.298836, 0.640856, 0, 0, 0)
+script = ExtResource("5_83jpv")
+target = NodePath("../Player")
+
+[node name="Camera" type="Camera3D" parent="View"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+current = true
+fov = 40.0
+
+[connection signal="coin_collected" from="Player" to="HUD" method="_on_coin_collected"]
+
+[editable path="Player"]

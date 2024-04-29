@@ -1,9 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://clb5x3j25yi78"]
+[gd_scene load_steps=10 format=3 uid="uid://clb5x3j25yi78"]
 
 [ext_resource type="PackedScene" uid="uid://dl2ed4gkybggf" path="res://objects/player.tscn" id="1_sx12s"]
 [ext_resource type="Material" uid="uid://bpw3wwjdyxm5w" path="res://Metal.tres" id="2_1s5w4"]
 [ext_resource type="Script" path="res://scripts/hud.gd" id="2_6f5ip"]
-[ext_resource type="Script" path="res://objects/Drill Root.gd" id="2_crugy"]
 [ext_resource type="Texture2D" uid="uid://cd7oyc56ehkx1" path="res://sprites/coin.png" id="3_f326n"]
 [ext_resource type="FontFile" uid="uid://d0cxd77jybrcn" path="res://fonts/lilita_one_regular.ttf" id="4_vjgqr"]
 [ext_resource type="Script" path="res://scripts/view.gd" id="5_83jpv"]
@@ -24,18 +23,25 @@ shadow_offset = Vector2(2, 2)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 view = NodePath("../View")
 
-[node name="Roboy" parent="Player" index="4" node_paths=PackedStringArray("RobotDrillRoot", "RobotDrillRotationRoot")]
+[node name="Roboy" parent="Player" index="4" node_paths=PackedStringArray("RobotDrillRoot", "RobotDrillRotationRoot", "AntennaRotationRoot", "AntennaLight")]
 RobotDrillRoot = NodePath("../../Drill Root")
 RobotDrillRotationRoot = NodePath("../../Drill Root/Rotation Root")
+AntennaRotationRoot = NodePath("RoMesh/Antenna")
+AntennaLight = NodePath("RoMesh/Antenna/Antenna Model/Orrrrb/OmniLight3D")
+HeadOffsetRatio = 0.12
+DrillTiltRatio = 0.82
+DrillRotationSpeed = -40
+DrillRotationSpeedDigging = -70
+AntennaRotationSpeedIdle = 5
+AntennaRotationSpeedMax = 25
 
 [node name="Drill Root" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00306958, 0.0145177, 0.000886321)
-script = ExtResource("2_crugy")
 
 [node name="Rotation Root" type="Node3D" parent="Drill Root"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Drill Root/Rotation Root"]
-transform = Transform3D(0.290533, 0, 0, 0, 0.487625, 0, 0, 0, 0.290533, 0, 0.466726, 0)
+transform = Transform3D(0.290533, 0, 0, 0, 0.346648, 0, 0, 0, 0.290533, 0, 0.313703, 0)
 mesh = SubResource("CapsuleMesh_bumsu")
 skeleton = NodePath("../../..")
 surface_material_override/0 = ExtResource("2_1s5w4")
@@ -91,10 +97,11 @@ script = ExtResource("5_83jpv")
 target = NodePath("../Player")
 
 [node name="Camera" type="Camera3D" parent="View"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+transform = Transform3D(1, 0, 0, 0, 1, -3.57628e-07, 0, 0, 1, 0, 4.76837e-07, 10)
 current = true
 fov = 40.0
 
 [connection signal="coin_collected" from="Player" to="HUD" method="_on_coin_collected"]
 
 [editable path="Player"]
+[editable path="Player/Roboy"]

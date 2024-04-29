@@ -1,6 +1,10 @@
 extends CharacterBody3D
 
 signal coin_collected
+signal dig_start
+signal dig_end
+
+signal dig_site_register
 
 @export_subgroup("Components")
 @export var view: Node3D
@@ -22,6 +26,10 @@ signal coin_collected
 @export var DASH_DURATION = 0.33
 @export var DASH_VERTICAL_SPEED = 5
 
+@export_subgroup("Dig")
+@export var DIG_DOWN_SPEED = 10
+@export var DIG_DOWNWARD_BODY_OFFSET = 0.175
+
 var movement_velocity: Vector3
 var rotation_direction: float
 var verticalSpeed = 0
@@ -36,6 +44,10 @@ var num_dashes = 1
 var dash_remaining = 0.0
 var dash_velocity = Vector3.ZERO
 
+var is_digging = false
+var current_dig_target = null
+var current_dig_handler = null
+
 # Functions
 func _physics_process(delta):
 	# Handle functions
@@ -48,7 +60,9 @@ func _physics_process(delta):
 	# Movement
 	var applied_velocity: Vector3
 	
-	if (dash_remaining > 0):
+	if (is_digging):
+		applied_velocity = velocity.lerp(Vector3.ZERO, delta * 6)
+	elif (dash_remaining > 0):
 		applied_velocity = velocity.lerp(movement_velocity, delta * 3)
 		dash_remaining -= delta
 	else:
@@ -70,6 +84,10 @@ func _physics_process(delta):
 	
 	# Animation for scale (jumping and landing)
 	model.scale = model.scale.lerp(Vector3(1, 1, 1), delta * 10)
+	if is_digging:
+		model.position = model.position.lerp(Vector3(model.position.x, -DIG_DOWNWARD_BODY_OFFSET, model.position.z), delta * 10)
+	else:
+		model.position = model.position.lerp(Vector3(model.position.x, 0, model.position.z), delta * 10)
 	
 	# Animation when landing
 	if is_on_floor() and verticalSpeed > 2 and !previously_floored:
@@ -120,6 +138,11 @@ func handle_controls(delta):
 		
 	if Input.is_action_just_pressed("dash") and dash_remaining <= 0 and num_dashes > 0:
 		dash(delta)
+		
+	if Input.is_action_just_pressed("dig"):
+		dig(delta, true)
+	elif Input.is_action_just_released("dig"):
+		dig(delta, false)
 
 # Handle gravity
 func handle_vertical_speed(delta):
@@ -135,6 +158,7 @@ func jump():
 		jumpTimer = 0
 		verticalSpeed = -jump_strength
 		model.scale = Vector3(0.5, 1.5, 0.5)
+		dig(0, false)
 		Audio.play("res://sounds/jump.ogg")
 		if timeSinceGrounded < COYOTE_BUFFER_DURATION:
 			numJumps -= 1
@@ -154,6 +178,21 @@ func dash(delta):
 	if not is_on_floor():
 		num_dashes -= 1
 
+func dig(delta, is_pressed):
+	if is_pressed:
+		if not is_digging:
+			dig_start.emit()
+			is_digging = true
+			if (is_on_floor()):
+				pass #todo particle and other logic
+			else:
+				if verticalSpeed < DIG_DOWN_SPEED:
+					set_gravity(DIG_DOWN_SPEED)
+	else:
+		if is_digging:
+			pass #todo logic to stop digging if we were digging
+		is_digging = false
+
 # Collecting coins
 func collect_coin():
 	coins += 1
@@ -165,3 +204,8 @@ func set_gravity(ySpeed):
 func restore_jumps():
 	numJumps = NUM_JUMPS
 	num_dashes = 1
+
+func register_dig_site(pos, handler):
+	current_dig_target = pos
+	current_dig_handler = handler
+	dig_site_register.emit(pos, handler)

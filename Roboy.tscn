@@ -1,11 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://bs00v6p0pjla2"]
+[gd_scene load_steps=14 format=3 uid="uid://bs00v6p0pjla2"]
 
 [ext_resource type="ArrayMesh" uid="uid://ccmurmskuorjv" path="res://objects/Roboy/Roboy.obj" id="1_jep5r"]
 [ext_resource type="Script" path="res://objects/Roboy/RoboyTilt.gd" id="1_ljynj"]
 [ext_resource type="Texture2D" uid="uid://8cise5r0ll68" path="res://objects/Roboy/texture_1.png" id="2_euky3"]
 [ext_resource type="Script" path="res://Robomesh.gd" id="3_yww0h"]
 [ext_resource type="Script" path="res://FaceSprite.gd" id="4_cchsr"]
-[ext_resource type="Material" uid="uid://bpw3wwjdyxm5w" path="res://Metal.tres" id="4_kfrcy"]
+[ext_resource type="PackedScene" uid="uid://4xnxr70ix1rh" path="res://models/Antenna.glb" id="6_guu43"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mb4ha"]
 vertex_color_use_as_albedo = true
@@ -40,8 +40,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CylinderMesh" id="CylinderMesh_xai17"]
-
 [sub_resource type="SphereMesh" id="SphereMesh_tkmnb"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_b77gl"]
@@ -50,10 +48,9 @@ blend_mode = 1
 cull_mode = 2
 albedo_color = Color(0.810698, 0.826485, 0.983038, 0.227451)
 
-[node name="Roboy" type="Node3D" node_paths=PackedStringArray("RobotHead", "RobotDrillRoot")]
+[node name="Roboy" type="Node3D" node_paths=PackedStringArray("RobotHead")]
 script = ExtResource("1_ljynj")
 RobotHead = NodePath("RoMesh")
-RobotDrillRoot = NodePath("")
 
 [node name="RoMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.316501, 0, 0, 0, 0.316501, 0, 0, 0, 0.316501, 0.00306958, 0.523782, -0.0500943)
@@ -75,18 +72,17 @@ animation = &"face"
 script = ExtResource("4_cchsr")
 
 [node name="Antenna" type="Node3D" parent="RoMesh"]
-transform = Transform3D(3.15955, 0, 0, 0, 3.15955, 0, 0, 0, 3.15955, -0.00969849, -0.317418, 0.158275)
+transform = Transform3D(3.15955, 0, 0, 0, 3.15955, 0, 0, 0, 3.15955, 0, 0, 0)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RoMesh/Antenna"]
-transform = Transform3D(0.023991, 0, 0, 0, 0.199994, 0, 0, 0, 0.0285514, -0.00686662, 0.681768, -0.0524841)
-material_override = ExtResource("4_kfrcy")
-mesh = SubResource("CylinderMesh_xai17")
+[node name="Antenna Model" parent="RoMesh/Antenna" instance=ExtResource("6_guu43")]
+transform = Transform3D(0.45, 0, 0, 0, 0.45, 0, 0, 0, 0.45, -0.0280124, 0.758616, 0.0159853)
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="RoMesh/Antenna"]
-transform = Transform3D(0.0458457, 0, 0, 0, 0.0458457, 0, 0, 0, 0.0458457, -0.00550134, 0.895309, -0.0529209)
+[node name="Orrrrb" type="MeshInstance3D" parent="RoMesh/Antenna/Antenna Model"]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.461228, 0.351849, 0.151654)
 mesh = SubResource("SphereMesh_tkmnb")
+skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_b77gl")
 
-[node name="OmniLight3D" type="OmniLight3D" parent="RoMesh/Antenna"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00731722, 0.88521, -0.0510748)
-omni_range = 0.375
+[node name="OmniLight3D" type="OmniLight3D" parent="RoMesh/Antenna/Antenna Model/Orrrrb"]
+transform = Transform3D(31.5955, 0, 0, 0, 31.5955, 0, 0, 0, 31.5955, -0.0396094, -1.91471, 0.0402677)
+omni_range = 0.275

@@ -42,6 +42,7 @@ modulate = Color(1, 1, 1, 0.705882)
 normal_fade = 0.5
 
 [node name="ParticlesTrail" type="CPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.056, 0)
 material_override = SubResource("StandardMaterial3D_q7stj")
 cast_shadow = 0
 amount = 60
@@ -62,3 +63,13 @@ autoplay = true
 
 [node name="Roboy" parent="." node_paths=PackedStringArray("Character") instance=ExtResource("5_7owau")]
 Character = NodePath("..")
+HeadOffsetRatio = 0.12
+DrillTiltRatio = 0.82
+DrillRotationSpeed = -40
+DrillRotationSpeedDigging = -70
+AntennaRotationSpeedIdle = 5
+AntennaRotationSpeedMax = 25
+
+[connection signal="dig_end" from="." to="Roboy" method="_on_player_dig_end"]
+[connection signal="dig_site_register" from="." to="Roboy" method="_on_player_dig_site_register"]
+[connection signal="dig_start" from="." to="Roboy" method="_on_player_dig_start"]

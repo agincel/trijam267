@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://cvmltu70cfk32"]
+
+[ext_resource type="PackedScene" uid="uid://c31n7b2qfj1im" path="res://models/wooden_spike.glb" id="1_bdmby"]
+[ext_resource type="Material" uid="uid://bpw3wwjdyxm5w" path="res://Metal.tres" id="2_wiwgi"]
+
+[node name="Root Scene" instance=ExtResource("1_bdmby")]
+
+[node name="Spike" parent="RootNode" index="0"]
+surface_material_override/0 = ExtResource("2_wiwgi")
+surface_material_override/1 = ExtResource("2_wiwgi")

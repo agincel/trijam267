@@ -13,6 +13,11 @@ extends Node3D
 @export var DrillRotationSpeedDigging = -70
 @export var AntennaRotationSpeedIdle = 5
 @export var AntennaRotationSpeedMax = 25
+@export var AntennaActiveBrightness = 10
+
+@export var TimeBetweenBeepsMax = 0.7
+@export var TimeBetweenBeepsMin = 0.45
+@export var TimeBetweenBeepsInRange = 0.3
 
 var is_digging = false
 
@@ -25,6 +30,10 @@ var currentAntennaRotationSpeed = 10
 var startColor
 var current_dig_target := Vector3.ZERO
 var current_dig_handler = null
+var beepTimer = 0
+var currentTimeToBeep = 0.7
+
+var startingBrightness = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -32,28 +41,15 @@ func _ready():
 	DrillStartingOffset = RobotDrillRoot.global_position - self.global_position
 	currentAntennaRotationSpeed = AntennaRotationSpeedIdle
 	startColor = AntennaLight.light_color
+	startingBrightness = AntennaLight.light_energy
 	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	HandlePlayerTilt(delta)
-	
-	if (current_dig_handler != null):
-		var distanceVector = current_dig_target - self.global_position
-		var dist = distanceVector.length()
-		
-		if (dist <= current_dig_handler.IN_RANGE_DISTANCE):
-			AntennaLight.light_color = Color.GREEN
-		else:
-			AntennaLight.light_color = startColor
-			
-		currentAntennaRotationSpeed = clampf(
-			lerpf(
-				AntennaRotationSpeedMax, 
-				AntennaRotationSpeedIdle, 
-				(dist - current_dig_handler.IN_RANGE_DISTANCE) / (current_dig_handler.MAX_DISTANCE - current_dig_handler.IN_RANGE_DISTANCE)
-				), AntennaRotationSpeedIdle, AntennaRotationSpeedMax)
+	HandleAntenna(delta)
+	HandleBeeping(delta)
 
 func HandlePlayerTilt(delta):
 	var vel = Character.velocity
@@ -77,6 +73,47 @@ func HandlePlayerTilt(delta):
 	
 	AntennaRotationRoot.rotation += Vector3(0, currentAntennaRotationSpeed * delta, 0)
 
+func HandleAntenna(delta):
+	if (current_dig_handler != null):
+		var distanceVector = current_dig_target - self.global_position
+		var dist = distanceVector.length()
+		
+		if (dist <= current_dig_handler.IN_RANGE_DISTANCE):
+			AntennaLight.light_color = Color.GREEN
+			AntennaLight.light_energy = AntennaActiveBrightness
+		else:
+			AntennaLight.light_color = startColor
+			AntennaLight.light_energy = startingBrightness
+			
+		currentAntennaRotationSpeed = clampf(
+			lerpf(
+				AntennaRotationSpeedMax, 
+				AntennaRotationSpeedIdle, 
+				(dist - current_dig_handler.IN_RANGE_DISTANCE) / (current_dig_handler.MAX_DISTANCE - current_dig_handler.IN_RANGE_DISTANCE)
+				), AntennaRotationSpeedIdle, AntennaRotationSpeedMax)
+
+func HandleBeeping(delta):
+	if (current_dig_handler != null):
+		var distanceVector = current_dig_target - self.global_position
+		var dist = distanceVector.length()
+		
+		beepTimer += delta
+		
+		if (dist <= current_dig_handler.IN_RANGE_DISTANCE):
+			currentTimeToBeep = TimeBetweenBeepsInRange
+		else:
+			currentTimeToBeep = clampf(
+				lerpf(
+					TimeBetweenBeepsMin,
+					TimeBetweenBeepsMax,
+					(dist - current_dig_handler.IN_RANGE_DISTANCE) / (current_dig_handler.MAX_DISTANCE - current_dig_handler.IN_RANGE_DISTANCE)
+				), TimeBetweenBeepsMin, TimeBetweenBeepsMax
+			)
+		
+		if (beepTimer > currentTimeToBeep):
+			Audio.play("res://sounds/coin.ogg") # Play sound
+			beepTimer = 0
+
 func _on_player_dig_start():
 	is_digging = true
 
@@ -86,3 +123,9 @@ func _on_player_dig_end():
 func _on_player_dig_site_register(pos, handler):
 	current_dig_target = pos
 	current_dig_handler = handler
+	currentTimeToBeep = 0.7
+	beepTimer = currentTimeToBeep
+	
+	if (handler == null):
+		AntennaLight.light_color = startColor
+		currentAntennaRotationSpeed = AntennaRotationSpeedIdle

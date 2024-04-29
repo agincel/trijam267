@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bqqgyqafm7xwp"]
+[gd_scene load_steps=12 format=3 uid="uid://bqqgyqafm7xwp"]
 
 [ext_resource type="Environment" uid="uid://bqnqgflivjvue" path="res://scenes/main-environment.tres" id="1_ahusb"]
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_vhber"]
@@ -8,18 +8,18 @@
 [ext_resource type="PackedScene" uid="uid://uqr4hswv6d2g" path="res://objects/platform_grass_large_round.tscn" id="8_4oh1e"]
 [ext_resource type="PackedScene" uid="uid://c8up71en5djgm" path="res://objects/platform_falling.tscn" id="9_2fnpo"]
 [ext_resource type="PackedScene" uid="uid://dtjvjdjl8cs6e" path="res://models/flag.glb" id="9_fw1f5"]
-[ext_resource type="Script" path="res://scenes/Dig Area.gd" id="11_6bpbt"]
+[ext_resource type="PackedScene" uid="uid://di2c1oepduunj" path="res://objects/dig_area.tscn" id="11_7txb3"]
 [ext_resource type="PackedScene" uid="uid://dy017k58p20sk" path="res://objects/cloud.tscn" id="13_drtpy"]
 [ext_resource type="PackedScene" uid="uid://c6fyppafhdqbr" path="res://objects/launchpad.tscn" id="14_nwm4y"]
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_ry7dq"]
-radius = 3.0
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_vhber")
 
 [node name="Player Container" parent="." instance=ExtResource("2_e8yfk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.59088, 1, 6.26578)
+
+[node name="SoundDigging" parent="Player Container/Player" index="4"]
+volume_db = 0.0
 
 [node name="View" parent="Player Container" index="3"]
 transform = Transform3D(1, 0, 0, 0, 0.906308, 0.422618, 0, -0.422618, 0.906307, 0, 0, 0)
@@ -41,7 +41,7 @@ transform = Transform3D(0.993085, 0, -0.117399, 0, 1.61925, 0, 0.117399, 0, 0.99
 transform = Transform3D(1.85883, 0, 0.18703, 0, 3.04593, 0, -0.163934, 0, 2.12071, -12.6442, 0, -2.97432)
 
 [node name="platform-falling" parent="World" instance=ExtResource("9_2fnpo")]
-transform = Transform3D(0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, 0.984808, -38.0459, 0.419294, -0.355402)
+transform = Transform3D(0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, 0.984808, -21.4401, 0.419294, -0.355402)
 
 [node name="platform-grass-large-round" parent="World" instance=ExtResource("8_4oh1e")]
 transform = Transform3D(-3.84839, 0, 3.19216, 0, 5, 0, -3.19216, 0, -3.84839, -7, -2.56871, -2)
@@ -71,24 +71,21 @@ transform = Transform3D(1.56209, -1.37982, 1.71508, 1.97375, 1.80907, -0.342241,
 transform = Transform3D(1.56209, -1.37982, 1.71508, 1.97375, 1.80907, -0.342241, -0.974547, 1.4522, 2.05595, -15.866, 18.0084, 7.83702)
 
 [node name="Launchpad" parent="." instance=ExtResource("14_nwm4y")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.84479, -0.137572, -2.43206)
 
-[node name="Dig Area" type="Node3D" parent="." node_paths=PackedStringArray("NotificationArea", "DigArea")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.7393, 1.5016, -3.02466)
-script = ExtResource("11_6bpbt")
-NotificationArea = NodePath("Get Notified Area")
-DigArea = NodePath("Exact Dig Spot")
+[node name="Dig Area" parent="." instance=ExtResource("11_7txb3")]
 
-[node name="Get Notified Area" type="Area3D" parent="Dig Area"]
+[node name="Exact Dig Spot" parent="Dig Area" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.15497, 0.0420001, -2.05136)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Dig Area/Get Notified Area"]
-shape = SubResource("SphereShape3D_ry7dq")
+[node name="Dig Area2" parent="." instance=ExtResource("11_7txb3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.01097, -0.552469, -12.1233)
 
-[node name="Exact Dig Spot" type="Node3D" parent="Dig Area"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.60334, 0.0423381, -1.80209)
-
-[connection signal="body_entered" from="Dig Area/Get Notified Area" to="Dig Area" method="_on_notification_area_entered"]
-[connection signal="body_exited" from="Dig Area/Get Notified Area" to="Dig Area" method="_on_notification_area_exited"]
+[node name="Exact Dig Spot" parent="Dig Area2" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.72901, 0.042, -0.0901995)
 
 [editable path="Player Container"]
 [editable path="Player Container/Player"]
 [editable path="Player Container/Player/Roboy"]
+[editable path="Dig Area"]
+[editable path="Dig Area2"]

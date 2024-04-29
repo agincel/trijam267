@@ -9,7 +9,9 @@ signal dig_site_register
 @export_subgroup("Components")
 @export var view: Node3D
 @export var particles_trail: CPUParticles3D
+@export var particles_digging: GPUParticles3D
 @export var sound_footsteps: AudioStreamPlayer
+@export var sound_digging: AudioStreamPlayer
 @export var model: Node3D
 @export var animation: AnimationPlayer
 
@@ -47,6 +49,8 @@ var dash_velocity = Vector3.ZERO
 var is_digging = false
 var current_dig_target = null
 var current_dig_handler = null
+var time_spent_digging = 0
+const DIG_CHECK_TIME = 0.6
 
 # Functions
 func _physics_process(delta):
@@ -54,6 +58,7 @@ func _physics_process(delta):
 	
 	handle_controls(delta)
 	handle_vertical_speed(delta)
+	dig_check(delta)
 	
 	handle_effects()
 	
@@ -104,11 +109,18 @@ func _physics_process(delta):
 func handle_effects():
 	particles_trail.emitting = false
 	sound_footsteps.stream_paused = true
+	sound_digging.stream_paused = not (is_digging and is_on_floor())
 	
 	if is_on_floor():
 		if abs(velocity.x) > 1 or abs(velocity.z) > 1:
 			particles_trail.emitting = true
 			sound_footsteps.stream_paused = false
+		
+		if is_digging and not particles_digging.emitting:
+			particles_digging.emitting = true
+
+	if (not is_digging or not is_on_floor()) and particles_digging.emitting:
+		particles_digging.emitting = false
 
 
 func get_input_3d():
@@ -138,7 +150,6 @@ func handle_controls(delta):
 		
 	if Input.is_action_just_pressed("dash") and dash_remaining <= 0 and num_dashes > 0:
 		dash(delta)
-		
 	if Input.is_action_just_pressed("dig"):
 		dig(delta, true)
 	elif Input.is_action_just_released("dig"):
@@ -170,6 +181,7 @@ func dash(delta):
 	if dash_direction.length_squared() <= 0:
 		dash_direction = Quaternion.from_euler(Vector3(0, rotation.y, 0)) * Vector3.BACK
 	
+	Audio.play("res://sounds/whoosh.wav") # Play sound
 	velocity = dash_direction.normalized() * DASH_SPEED * delta
 	dash_remaining = DASH_DURATION
 	verticalSpeed = -1 * DASH_VERTICAL_SPEED
@@ -181,22 +193,36 @@ func dash(delta):
 func dig(delta, is_pressed):
 	if is_pressed:
 		if not is_digging:
+			time_spent_digging = 0
 			dig_start.emit()
 			is_digging = true
 			if (is_on_floor()):
 				pass #todo particle and other logic
 			else:
 				if verticalSpeed < DIG_DOWN_SPEED:
+					Audio.play("res://sounds/whoosh_low.wav") # Play sound
 					set_gravity(DIG_DOWN_SPEED)
 	else:
 		if is_digging:
+			dig_end.emit()
 			pass #todo logic to stop digging if we were digging
 		is_digging = false
+		
+func dig_check(delta):
+	if is_digging and is_on_floor() and current_dig_handler != null:
+		if (time_spent_digging < DIG_CHECK_TIME and time_spent_digging + delta >= DIG_CHECK_TIME):
+			# report the check to our handler!
+			print("perform check!")
+			current_dig_handler.dig_check(self, model.global_position)
+		time_spent_digging += delta
+		print(time_spent_digging)
+		
 
 # Collecting coins
 func collect_coin():
 	coins += 1
 	coin_collected.emit(coins)
+	
 
 func set_gravity(ySpeed):
 	verticalSpeed = ySpeed

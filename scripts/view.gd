@@ -5,8 +5,8 @@ extends Node3D
 @export var vertical_offset = 1
 
 @export_group("Zoom")
-@export var zoom_minimum = 16
-@export var zoom_maximum = 4
+@export var zoom_minimum = 14
+@export var zoom_maximum = 6.5
 @export var zoom_speed = 10
 
 @export_group("Rotation")
@@ -14,6 +14,7 @@ extends Node3D
 @export var mouse_rotation_speed = 10
 
 var camera_rotation:Vector3
+var startingZoom = 10
 var zoom = 10
 var last_delta = 1 / 60
 
@@ -27,6 +28,7 @@ var did_use_mouse = false
 func _ready():
 	camera_rotation = rotation_degrees # Initial rotation
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	startingZoom = zoom
 	pass
 
 func _physics_process(delta):
@@ -61,8 +63,19 @@ func handle_input(delta):
 	
 	# Zooming
 	
-	zoom += Input.get_axis("zoom_in", "zoom_out") * zoom_speed * delta
-	zoom = clamp(zoom, zoom_maximum, zoom_minimum)
+	if (Input.is_action_just_pressed("zoom_toggle")):
+		if absf(zoom - startingZoom) < 0.1:
+			print("1")
+			zoom = zoom_maximum
+		elif zoom < startingZoom:
+			zoom = zoom_minimum
+			print("2")
+		elif zoom > startingZoom:
+			zoom = startingZoom
+			print("3")
+	
+	#zoom += Input.get_axis("zoom_in", "zoom_out") * zoom_speed * delta
+	#zoom = clamp(zoom, zoom_maximum, zoom_minimum)
 
 func _input(event):
 	if event is InputEventMouseMotion:

@@ -31,6 +31,6 @@ func _process(_delta):
 		
 		available[0].stream = load(queue.pop_front())
 		available[0].play()
-		available[0].pitch_scale = randf_range(0.9, 1.1)
+		available[0].pitch_scale = randf_range(1, 1.1)
 		
 		available.pop_front()

@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://di2c1oepduunj"]
+
+[ext_resource type="Script" path="res://scenes/Dig Area.gd" id="1_48yqj"]
+[ext_resource type="PackedScene" uid="uid://dfpisimsgf5ce" path="res://objects/coin.tscn" id="2_i3y37"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ry7dq"]
+radius = 5.0
+
+[node name="Dig Area" type="Node3D" node_paths=PackedStringArray("NotificationArea", "DigArea")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.7393, 1.5016, -3.02466)
+script = ExtResource("1_48yqj")
+CoinTemplate = ExtResource("2_i3y37")
+NotificationArea = NodePath("Get Notified Area")
+DigArea = NodePath("Exact Dig Spot")
+
+[node name="Get Notified Area" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Get Notified Area"]
+shape = SubResource("SphereShape3D_ry7dq")
+
+[node name="Exact Dig Spot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.042, 0)
+
+[connection signal="body_entered" from="Get Notified Area" to="." method="_on_notification_area_entered"]
+[connection signal="body_exited" from="Get Notified Area" to="." method="_on_notification_area_exited"]

@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://btkrd3ll6b4qa"]
+
+[ext_resource type="PackedScene" uid="uid://drksfc7we1t5y" path="res://models/fusili.glb" id="1_o0qpx"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pmv65"]
+diffuse_mode = 2
+albedo_color = Color(0.482353, 0.482353, 0.482353, 1)
+
+[node name="fusili" instance=ExtResource("1_o0qpx")]
+
+[node name="Node" parent="." index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_pmv65")

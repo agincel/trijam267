@@ -22,3 +22,6 @@ transform = Transform3D(-0.403434, 0, 0.915009, 0, 1, 0, -0.915009, 0, -0.403434
 
 [node name="platform-grass-large-round2_StaticBody3D#CollisionShape3D" type="CollisionShape3D" parent="platform-grass-large-round2#StaticBody3D" index="0"]
 shape = SubResource("ConcavePolygonShape3D_xh0ma")
+
+[node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="." index="5"]
+transform = Transform3D(2.41208, 0, 0, 0, 0.447492, 0, 0, 0, 2.3102, 0, 0, 0)

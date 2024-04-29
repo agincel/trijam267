@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://clb5x3j25yi78"]
+[gd_scene load_steps=11 format=3 uid="uid://clb5x3j25yi78"]
 
 [ext_resource type="PackedScene" uid="uid://dl2ed4gkybggf" path="res://objects/player.tscn" id="1_sx12s"]
 [ext_resource type="Material" uid="uid://bpw3wwjdyxm5w" path="res://Metal.tres" id="2_1s5w4"]
 [ext_resource type="Script" path="res://scripts/hud.gd" id="2_6f5ip"]
 [ext_resource type="Texture2D" uid="uid://cd7oyc56ehkx1" path="res://sprites/coin.png" id="3_f326n"]
+[ext_resource type="PackedScene" uid="uid://cvmltu70cfk32" path="res://objects/spike.tscn" id="3_pmi28"]
 [ext_resource type="FontFile" uid="uid://d0cxd77jybrcn" path="res://fonts/lilita_one_regular.ttf" id="4_vjgqr"]
 [ext_resource type="Script" path="res://scripts/view.gd" id="5_83jpv"]
 
@@ -19,21 +20,22 @@ shadow_offset = Vector2(2, 2)
 
 [node name="Player Container" type="Node3D"]
 
-[node name="Player" parent="." node_paths=PackedStringArray("view") instance=ExtResource("1_sx12s")]
+[node name="Player" parent="." node_paths=PackedStringArray("view", "particles_digging") instance=ExtResource("1_sx12s")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 view = NodePath("../View")
+particles_digging = NodePath("particle_digging")
 
-[node name="Roboy" parent="Player" index="4" node_paths=PackedStringArray("RobotDrillRoot", "RobotDrillRotationRoot", "AntennaRotationRoot", "AntennaLight")]
+[node name="ParticlesTrail" parent="Player" index="2"]
+visible = false
+
+[node name="SoundFootsteps" parent="Player" index="3"]
+pitch_scale = 2.5
+
+[node name="Roboy" parent="Player" index="5" node_paths=PackedStringArray("RobotDrillRoot", "RobotDrillRotationRoot", "AntennaRotationRoot", "AntennaLight")]
 RobotDrillRoot = NodePath("../../Drill Root")
 RobotDrillRotationRoot = NodePath("../../Drill Root/Rotation Root")
 AntennaRotationRoot = NodePath("RoMesh/Antenna")
 AntennaLight = NodePath("RoMesh/Antenna/Antenna Model/Orrrrb/OmniLight3D")
-HeadOffsetRatio = 0.12
-DrillTiltRatio = 0.82
-DrillRotationSpeed = -40
-DrillRotationSpeedDigging = -70
-AntennaRotationSpeedIdle = 5
-AntennaRotationSpeedMax = 25
 
 [node name="Drill Root" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00306958, 0.0145177, 0.000886321)
@@ -42,27 +44,31 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00306958, 0.0145177, 0.0008
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Drill Root/Rotation Root"]
 transform = Transform3D(0.290533, 0, 0, 0, 0.346648, 0, 0, 0, 0.290533, 0, 0.313703, 0)
+visible = false
 mesh = SubResource("CapsuleMesh_bumsu")
 skeleton = NodePath("../../..")
 surface_material_override/0 = ExtResource("2_1s5w4")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Drill Root/Rotation Root"]
-transform = Transform3D(0.627431, 0.0035772, 0.260087, -0.105, 0.0281468, 0.0301069, -0.252978, -0.00281044, 0.632566, 0, 0.374997, 0)
+transform = Transform3D(0.627431, 0.0035772, 0.260087, -0.105, 0.0281468, 0.0301069, -0.252978, -0.00281044, 0.632566, 0, 0.419278, 0)
 mesh = SubResource("SphereMesh_dmxrw")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("2_1s5w4")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Drill Root/Rotation Root"]
-transform = Transform3D(0.431428, 0.00245972, 0.178839, -0.0721994, 0.019354, 0.0207018, -0.17395, -0.00193249, 0.43496, 0, 0.227953, 0)
+transform = Transform3D(0.431428, 0.00245972, 0.178839, -0.0721994, 0.019354, 0.0207018, -0.17395, -0.00193249, 0.43496, 0, 0.272234, 0)
 mesh = SubResource("SphereMesh_dmxrw")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("2_1s5w4")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Drill Root/Rotation Root"]
-transform = Transform3D(0.36493, 0.00208059, 0.151273, -0.0610709, 0.0163709, 0.017511, -0.147139, -0.00163463, 0.367917, 0, 0.0988142, 0)
+transform = Transform3D(0.36493, 0.00208059, 0.151273, -0.0610709, 0.0163709, 0.017511, -0.147139, -0.00163463, 0.367917, 0, 0.143095, 0)
 mesh = SubResource("SphereMesh_dmxrw")
 skeleton = NodePath("../..")
 surface_material_override/0 = ExtResource("2_1s5w4")
+
+[node name="Root Scene" parent="Drill Root/Rotation Root" instance=ExtResource("3_pmi28")]
+transform = Transform3D(1, 0, 0, 0, -0.804231, 8.74228e-08, 0, -7.03081e-08, -1, 0, 1.09034, 0)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 script = ExtResource("2_6f5ip")
